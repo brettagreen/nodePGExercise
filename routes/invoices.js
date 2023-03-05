@@ -58,9 +58,9 @@ invoiceRouter.put('/:id', async function(req, res, next) {
 invoiceRouter.delete('/:id', async function(req, res, next) {
     try {
         const id = req.params.id;
-        const results = await db.query('DELETE FROM invoices WHERE id=$1', [id]);
+        const results = await db.query('DELETE FROM invoices WHERE id=$1 RETURNING id', [id]);
         if (results.rows.length === 0) {
-            throw new ExpressError(`that company code - ${code} - cannot be found`, 404);
+            throw new ExpressError(`that company code - ${id} - cannot be found`, 404);
         }
 
         return res.status(201).json({status: "deleted"});
@@ -73,10 +73,10 @@ invoiceRouter.get('/companies/:code', async function(req, res, next) {
     try {
         const code = req.params.code;
         const compResults = await db.query('SELECT * FROM companies WHERE code=$1', [code]);
-        if (results.rows.length === 0) {
+        if (compResults.rows.length === 0) {
             throw new ExpressError(`that company code - ${code} - cannot be found`, 404);
         }
-        const invoiceResults = await db.query(`SELECT * FROM INVOICES WHERE comp_code=${compResults.rows[0].code}`);
+        const invoiceResults = await db.query('SELECT * FROM invoices WHERE comp_code=$1', [compResults.rows[0].code]);
         return res.status(201).json({company: compResults.rows[0], invoices: invoiceResults.rows});
 
     } catch (err) {
