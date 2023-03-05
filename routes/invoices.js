@@ -7,7 +7,7 @@ const ExpressError = require("../expressError");
 invoiceRouter.get("/", async function(req, res, next) {
     try {
         const results = await db.query('SELECT * FROM invoices');
-        return res.status(201).json({invoices: results.rows});
+        return res.json({invoices: results.rows});
     
     } catch (err) {
         return next(err);
@@ -23,7 +23,7 @@ invoiceRouter.get('/:id', async function(req, res, next) {
         }
         const comp_code = results.rows[0].comp_code;
         const moreResults = await db.query('SELECT * FROM companies WHERE code=$1', [comp_code]);
-        return res.status(201).json({invoice: results.rows[0], company: moreResults.rows[0]});
+        return res.json({invoice: results.rows[0], company: moreResults.rows[0]});
     } catch (err) {
         return next(err);
     }
@@ -49,7 +49,7 @@ invoiceRouter.put('/:id', async function(req, res, next) {
         if (results.rows.length === 0) {
             throw new ExpressError(`unable to locate an invoice by that id!: ${id}`);
         }
-        return res.status(201).json({invoice: results.rows[0]});
+        return res.json({invoice: results.rows[0]});
     } catch (err) {
         return next(err);
     }
@@ -63,7 +63,7 @@ invoiceRouter.delete('/:id', async function(req, res, next) {
             throw new ExpressError(`that company code - ${id} - cannot be found`, 404);
         }
 
-        return res.status(201).json({status: "deleted"});
+        return res.json({status: "deleted"});
     } catch (err) {
         return next(err);
     }
@@ -77,7 +77,7 @@ invoiceRouter.get('/companies/:code', async function(req, res, next) {
             throw new ExpressError(`that company code - ${code} - cannot be found`, 404);
         }
         const invoiceResults = await db.query('SELECT * FROM invoices WHERE comp_code=$1', [compResults.rows[0].code]);
-        return res.status(201).json({company: compResults.rows[0], invoices: invoiceResults.rows});
+        return res.json({company: compResults.rows[0], invoices: invoiceResults.rows});
 
     } catch (err) {
         return next(err);

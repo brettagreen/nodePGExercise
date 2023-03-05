@@ -7,7 +7,7 @@ const ExpressError = require("../expressError");
 compRouter.get("/", async function(req, res, next) {
     try {
         const results = await db.query('SELECT code, name FROM companies');
-        return res.status(201).json({companies: results.rows});
+        return res.json({companies: results.rows});
     
     } catch (err) {
         return next(err);
@@ -21,7 +21,7 @@ compRouter.get('/:code', async function(req, res, next) {
         if (results.rows.length === 0) {
             throw new ExpressError(`that company code - ${code} - cannot be found`, 404);
         }
-        return res.status(201).json({company: results.rows[0]})
+        return res.json({company: results.rows[0]})
     } catch(err) {
         return next(err);
     }
@@ -49,7 +49,7 @@ compRouter.put('/:code', async function(req, res, next) {
             throw new ExpressError(`that company code - ${code} - cannot be found`, 404);
         }
 
-        return res.status(201).json({company: results.rows[0]})
+        return res.json({company: results.rows[0]})
     } catch (err) {
         return next(err);
     }
@@ -64,7 +64,7 @@ compRouter.delete('/:code', async function(req, res, next) {
             throw new ExpressError(`that company code - ${code} - cannot be found`, 404);
         }
 
-        return res.status(201).json({status: "deleted"});
+        return res.json({status: "deleted"});
     } catch (err) {
         return next(err);
     }
