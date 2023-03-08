@@ -4,6 +4,7 @@ const app = express();
 const morgan =  require('morgan');
 const compRouter = require('./routes/companies');
 const invoiceRouter = require('./routes/invoices');
+const indRouter = require('./routes/industries');
 
 const ExpressError = require("./expressError")
 
@@ -12,6 +13,7 @@ app.use(morgan('dev'));
 
 app.use('/companies', compRouter);
 app.use('/invoices', invoiceRouter);
+app.use('/industries', indRouter);
 
 /** 404 handler */
 app.use(function(req, res, next) {
